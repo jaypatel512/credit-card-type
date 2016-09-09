@@ -81,10 +81,16 @@ public enum CreditCardType {
 	 * match.
 	 */
 	public static CreditCardType[] forCardNumber(String cardNumber) {
+		return forCardNumber(cardNumber, false);
+	}
+
+	public static CreditCardType[] forCardNumber(String cardNumber, boolean strict) {
 		List<CreditCardType> matchedCardTypes = new ArrayList<CreditCardType>();
-		for (CreditCardType CreditCardType : values()) {
-			if (CreditCardType.getPattern().matcher(cardNumber).matches()) {
-				matchedCardTypes.add(CreditCardType);
+		for (CreditCardType creditCardType : values()) {
+			if (strict && creditCardType.validate(cardNumber)) {
+				matchedCardTypes.add(creditCardType);
+			} else if (creditCardType.validatePattern(cardNumber)) {
+				matchedCardTypes.add(creditCardType);
 			}
 		}
 		// This removes UNKNOWN if anything else is matched
@@ -102,9 +108,9 @@ public enum CreditCardType {
 	 * match.
 	 */
 	public static CreditCardType forCardNumberStrict(String cardNumber) {
-		CreditCardType[] matchedCardTypes = forCardNumber(cardNumber);
-		if (matchedCardTypes != null && matchedCardTypes.length > 0) {
-			return matchedCardTypes[0];
+		CreditCardType[] creditCardTypes = forCardNumber(cardNumber, true);
+		if (creditCardTypes.length > 0) {
+			return creditCardTypes[0];
 		}
 		return null;
 	}
@@ -160,12 +166,18 @@ public enum CreditCardType {
 		if (cardNumber == null || cardNumber.isEmpty()) {
 			return false;
 		}
+		return validateLength(cardNumber) && validatePattern(cardNumber);
+	}
+
+	public boolean validateLength(String cardNumber) {
 		final int numberLength = cardNumber.length();
 		if (numberLength < minCardLength || numberLength > maxCardLength) {
 			return false;
-		} else if (!pattern.matcher(cardNumber).matches()) {
-			return false;
 		}
 		return true;
+	}
+
+	public boolean validatePattern(String cardNumber) {
+		return pattern.matcher(cardNumber).matches();
 	}
 }
