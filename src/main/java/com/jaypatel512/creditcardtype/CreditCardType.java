@@ -81,7 +81,7 @@ public enum CreditCardType {
 	 * match.
 	 */
 	public static CreditCardType[] forCardNumber(String cardNumber) {
-		List<CreditCardType> matchedCardTypes = new ArrayList<>();
+		List<CreditCardType> matchedCardTypes = new ArrayList<CreditCardType>();
 		for (CreditCardType CreditCardType : values()) {
 			if (CreditCardType.getPattern().matcher(cardNumber).matches()) {
 				matchedCardTypes.add(CreditCardType);
@@ -92,6 +92,21 @@ public enum CreditCardType {
 			matchedCardTypes.remove(UNKNOWN);
 		}
 		return matchedCardTypes.toArray(new CreditCardType[matchedCardTypes.size()]);
+	}
+
+	/**
+	 * Returns the card type matching this account, or {@link CreditCardType}
+	 * for no match.
+	 * <p/>
+	 * A partial account type may be given, with the caveat that it may not have enough digits to
+	 * match.
+	 */
+	public static CreditCardType forCardNumberStrict(String cardNumber) {
+		CreditCardType[] matchedCardTypes = forCardNumber(cardNumber);
+		if (matchedCardTypes != null && matchedCardTypes.length > 0) {
+			return matchedCardTypes[0];
+		}
+		return null;
 	}
 
 	/**
