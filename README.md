@@ -1,6 +1,7 @@
 # CreditCardType
 
 This is a utility library which returns possible credit card types based on the input. This is heavily copy/pasted from [Braintree Card Form](https://github.com/braintree/android-card-form) and [Braintree Credit Card Type Node library](https://github.com/braintree/credit-card-type).
+The card images used in this library are thanks to [Minh Do](https://www.iconfinder.com/minhm2m), [Nazarrudin Ansyari](https://www.iconfinder.com/nazarr) and [Linh Pham Thi Dieu](https://www.iconfinder.com/phdieuli).
 
 # Setup
 
