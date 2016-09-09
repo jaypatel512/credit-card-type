@@ -2,6 +2,48 @@
 
 This is a utility library which returns possible credit card types based on the input. This is heavily copy/pasted from [Braintree Card Form](https://github.com/braintree/android-card-form) and [Braintree Credit Card Type Node library](https://github.com/braintree/credit-card-type).
 
+# Setup
+
+## Gradle
+
+Step 1. Add it in your root build.gradle at the end of repositories:
+```gradle
+    allprojects {
+        repositories {
+            ...
+            maven { url "https://jitpack.io" }
+        }
+    }
+```
+
+Step 2. Add the dependency
+```gradle
+    dependencies {
+        compile 'com.github.jaypatel512:credit-card-type:master-SNAPSHOT'
+    }
+```
+
+### Maven
+
+Step 1. Add repository in pom.xml
+```xml
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+```
+
+Step 2. Add the dependency
+```xml
+    <dependency>
+        <groupId>com.github.jaypatel512</groupId>
+        <artifactId>credit-card-type</artifactId>
+        <version>master-SNAPSHOT</version>
+    </dependency>
+```
+
 # Sample
 ```java
 CreditCardType[] types = CreditCardType.forCardNumber("6");
