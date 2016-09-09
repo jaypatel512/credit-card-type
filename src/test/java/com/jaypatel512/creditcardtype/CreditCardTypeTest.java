@@ -1,6 +1,5 @@
 package com.jaypatel512.creditcardtype;
 
-import com.jaypatel512.creditcardtype.util.RandomCreditCards;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -1,6 +1,4 @@
-package com.jaypatel512.creditcardtype.util;
-
-import com.jaypatel512.creditcardtype.CreditCardType;
+package com.jaypatel512.creditcardtype;
 
 import java.util.Arrays;
 import java.util.Collection;
