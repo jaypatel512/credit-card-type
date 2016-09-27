@@ -9,54 +9,85 @@ import java.util.regex.Pattern;
  */
 public enum CreditCardType {
 
-	VISA("^4\\d*",
+	VISA(
+			"^4\\d*",
+			"^4",
 			16, 16,
 			3, "CVV",
-			new int[] {4, 8, 12}),
-	MASTERCARD("^(5|5[1-5]\\d*|2|22|222|222[1-9]\\d*|2[3-6]\\d*|27[0-1]\\d*|2720\\d*)",
+			new int[] {4, 8, 12}
+	),
+	MASTERCARD(
+			"^(5[1-5]|222[1-9]|2[3-6]|27[0-1]|2720)\\d*",
+			"^(5|5[1-5]|2|22|222|222[1-9]|2[3-6]|27[0-1]|2720)",
 			16, 16,
 			3, "CVC",
-			new int[] {4, 8, 12}),
-	DISCOVER("^6(0|01|011\\d*|5\\d*|4|4[4-9]\\d*)?",
+			new int[] {4, 8, 12}
+	),
+	DISCOVER(
+			"^(6011|65|64[4-9])\\d*",
+			"^(6|60|601|6011|65|64|64[4-9])",
 			16, 16,
 			3, "CID",
-			new int[] {4, 8, 12}),
-	AMEX("^3[47]\\d*",
+			new int[] {4, 8, 12}
+	),
+	AMEX(
+			"^(3|34|37)",
+			"^3[47]\\d*",
 			15, 15,
 			4, "CID",
-			new int[] {4, 10}),
-	DINERS_CLUB("^3((0([0-5]\\d*)?)|[689]\\d*)?",
+			new int[] {4, 10}
+	),
+	DINERS_CLUB(
+			"^3(0[0-5]|[689])\\d*",
+			"^(3|3[0689]|30[0-5])",
 			14, 14,
 			3, "CVV",
-			new int[] {4, 10}),
-	JCB("^((2|21|213|2131\\d*)|(1|18|180|1800\\d*)|(3|35\\d*))",
+			new int[] {4, 10}
+	),
+	JCB(
+			"^(2131|1800|35)\\d*",
+			"^(2|21|213|2131|1|18|180|1800|3|35)",
 			16, 16,
 			3, "CVV",
-			new int[] {4, 8, 12}),
-	MAESTRO("^((5((0|[6-9])\\d*)?)|((6([0-9]\\d*)?)))",
+			new int[] {4, 8, 12}
+	),
+	MAESTRO(
+			"^5[06-9]\\d*",
+			"^(5|5[06-9]|6\\d*)",
 			12, 19,
 			3, "CVC",
-			new int[] {4, 8, 12}),
-	UNIONPAY("^6(2\\d*)?",
+			new int[] {4, 8, 12}
+	),
+	UNIONPAY(
+			"^62\\d*",
+			"^(6|62)",
 			16, 19,
 			3, "CVN",
-			new int[] {4, 8, 12}),
-	UNKNOWN("\\d+",
+			new int[] {4, 8, 12}
+	),
+	UNKNOWN(
+			"\\d+",
+			"\\d+",
 			12, 19,
 			3, "CVV",
-			new int[] {4, 8, 12}),
-	EMPTY("^$",
+			new int[] {4, 8, 12}
+	),
+	EMPTY(
+			"^$",
+			"^$",
 			12, 19,
-			3, "CVV", null);
+			3, "CVV", null
+	);
 
 	private final Pattern pattern;
+	private final Pattern prefixPattern;
 	private final int minCardLength;
 	private final int maxCardLength;
 	private final int securityCodeLength;
 	private final String securityCodeName;
 	private int[] spaceIndices;
 
-	CreditCardType(String regex, int minCardLength, int maxCardLength, int securityCodeLength,
+	CreditCardType(String regex, String prefixPattern, int minCardLength, int maxCardLength, int securityCodeLength,
 	               String securityCodeName, int[] spaceIndices) {
 		if (minCardLength <= 0) {
 			throw new IllegalArgumentException("minCardLength cannot be lower or equal to 0.");
@@ -65,6 +96,7 @@ public enum CreditCardType {
 			throw new IllegalArgumentException("maxCardLength cannot be lower than minCardLength.");
 		}
 
+		this.prefixPattern = Pattern.compile(prefixPattern);
 		this.pattern = Pattern.compile(regex);
 		this.minCardLength = minCardLength;
 		this.maxCardLength = maxCardLength;
@@ -122,6 +154,10 @@ public enum CreditCardType {
 		return pattern;
 	}
 
+	public Pattern getPrefixPattern() {
+		return prefixPattern;
+	}
+
 	/**
 	 * @return The android resource id for the security code name for this card type.
 	 */
@@ -170,14 +206,17 @@ public enum CreditCardType {
 	}
 
 	public boolean validateLength(String cardNumber) {
-		final int numberLength = cardNumber.length();
-		if (numberLength < minCardLength || numberLength > maxCardLength) {
+		if (cardNumber == null) {
 			return false;
 		}
-		return true;
+		final int numberLength = cardNumber.length();
+		if (numberLength >= minCardLength && numberLength <= maxCardLength) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean validatePattern(String cardNumber) {
-		return pattern.matcher(cardNumber).matches();
+		return pattern.matcher(cardNumber).matches() || prefixPattern.matcher(cardNumber).matches();
 	}
 }

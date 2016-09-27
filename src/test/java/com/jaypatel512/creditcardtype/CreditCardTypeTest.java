@@ -70,6 +70,15 @@ public class CreditCardTypeTest {
 	}
 
 	@Test
+	public void testForIncrementingNumbers() {
+		for (int i = 4; i < this.cardNumber.length(); i++) {
+			String incrementingCardNumber = this.cardNumber.substring(0, i);
+			final CreditCardType[] actualTypes = CreditCardType.forCardNumber(incrementingCardNumber);
+			assertTrue(String.format("CreditCardType.forCardNumber failed for %s", cardNumber), Arrays.asList(actualTypes).contains(creditCardType));
+		}
+	}
+
+	@Test
 	public void testForCardNumber() {
 		final CreditCardType[] actualTypes = CreditCardType.forCardNumber(cardNumber);
 		assertTrue(actualTypes.length >= 1); // Either EMPTY or UNKNOWN
